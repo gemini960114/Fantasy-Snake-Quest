@@ -2,7 +2,7 @@
  * API Client - 與後端伺服器通訊
  */
 
-const API_BASE_URL = 'http://localhost:8005/api/v1';
+const API_BASE_URL = 'http://localhost:8000/api/v1';
 
 class APIClient {
     constructor(baseUrl = API_BASE_URL) {

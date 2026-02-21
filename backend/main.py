@@ -175,4 +175,4 @@ async def get_score(score_id: int):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8005)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

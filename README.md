@@ -89,7 +89,7 @@ uv sync
 bash run.sh
 
 # 3. 啟動伺服器（方法 B：直接執行）
-uv run uvicorn main:app --host 0.0.0.0 --port 8005
+uv run uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 ### 方法二：使用 pip（替代方案）
@@ -107,7 +107,7 @@ source .venv/bin/activate        # Linux / macOS
 pip install -r requirements.txt
 
 # 4. 啟動伺服器
-uvicorn main:app --host 0.0.0.0 --port 8005
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 ### 驗證後端運行
@@ -115,7 +115,7 @@ uvicorn main:app --host 0.0.0.0 --port 8005
 後端啟動後，於瀏覽器開啟以下網址確認服務正常：
 
 ```
-http://localhost:8005/
+http://localhost:8000/
 ```
 
 預期回應：
@@ -133,7 +133,7 @@ http://localhost:8005/
 
 互動式 API 文件（Swagger UI）：
 ```
-http://localhost:8005/docs
+http://localhost:8000/docs
 ```
 
 ---
@@ -148,28 +148,28 @@ http://localhost:8005/docs
 # 切換到前端目錄
 cd frontend
 
-# 啟動靜態伺服器（Port 8090）
-python3 -m http.server 8090
+# 啟動靜態伺服器（Port 3000）
+python3 -m http.server 3000
 ```
 
 接著在瀏覽器開啟：
 
 ```
-http://localhost:8090
+http://localhost:3000
 ```
 
 ### 方法二：使用 uv 執行
 
 ```bash
 cd frontend
-uv run python -m http.server 8090
+uv run python -m http.server 3000
 ```
 
 ### 方法三：其他 HTTP 伺服器
 
 ```bash
 # 使用 Node.js serve
-npx serve frontend -p 8090
+npx serve frontend -p 3000
 
 # 使用 VS Code Live Server 擴充功能（直接開啟 frontend/index.html）
 ```
@@ -256,7 +256,7 @@ npx serve frontend -p 8090
 
 ## 📡 API 文件
 
-後端 API 基礎路徑：`http://localhost:8005/api/v1`
+後端 API 基礎路徑：`http://localhost:8000/api/v1`
 
 ### POST `/api/v1/scores` — 提交分數
 
@@ -339,11 +339,11 @@ GET /api/v1/scores/1
 
 ## ⚠️ 注意事項
 
-1. **啟動順序**：請先啟動後端（Port 8005），再啟動前端（Port 8090）。
-2. **同源限制**：前端的 `api.js` 中 `API_BASE_URL` 預設為 `http://localhost:8005/api/v1`，若部署至其他主機需修改此設定。
+1. **啟動順序**：請先啟動後端（Port 8000），再啟動前端（Port 3000）。
+2. **同源限制**：前端的 `api.js` 中 `API_BASE_URL` 預設為 `http://localhost:8000/api/v1`，若部署至其他主機需修改此設定。
 3. **資料庫**：SQLite 資料庫檔案 `backend/snake_game.db` 會在後端首次啟動時自動建立，無需手動操作。
 4. **瀏覽器需求**：需支援 ES Module（`type="module"`）的現代瀏覽器，建議使用 Chrome 90+、Firefox 89+、Edge 90+。
-5. **防火牆**：若在遠端伺服器執行，請確認 Port 8005 和 Port 8090 已開放對外。
+5. **防火牆**：若在遠端伺服器執行，請確認 Port 8000 和 Port 3000 已開放對外。
 
 ---
 
