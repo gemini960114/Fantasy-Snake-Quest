@@ -9,8 +9,23 @@
 
 ---
 
+## 🌍 線上 Demo（Google Cloud Run）
+
+> 已部署至 Google Cloud Run，無需安裝，直接在瀏覽器遊玩！
+
+| 項目 | 網址 |
+|------|------|
+| 🎮 **遊戲** | [https://snake-fantasy-api-57229660377.asia-east1.run.app](https://snake-fantasy-api-57229660377.asia-east1.run.app) |
+| 📡 **API** | [https://snake-fantasy-api-57229660377.asia-east1.run.app/api/v1/scores](https://snake-fantasy-api-57229660377.asia-east1.run.app/api/v1/scores) |
+| 📖 **Swagger** | [https://snake-fantasy-api-57229660377.asia-east1.run.app/docs](https://snake-fantasy-api-57229660377.asia-east1.run.app/docs) |
+
+> ⚠️ 採用 SQLite 儲存分數，Cloud Run 重新部署時排行榜資料會清空，此為正常現象。
+
+---
+
 ## 📋 目錄
 
+- [線上 Demo](#-線上-demogoogle-cloud-run)
 - [專案特色](#-專案特色)
 - [專案結構](#-專案結構)
 - [後端安裝與啟動](#-後端安裝與啟動)
@@ -18,6 +33,7 @@
 - [遊戲操作說明](#-遊戲操作說明)
 - [關卡介紹](#-關卡介紹)
 - [API 文件](#-api-文件)
+- [Cloud Run 部署](#-cloud-run-部署)
 - [注意事項](#-注意事項)
 
 ---
@@ -38,8 +54,12 @@
 ```
 roocode/
 ├── README.md                  # 本說明文件
-├── .gitignore                 # Git 忽略設定
+├── PROMPT.md                  # AI 設計提示詞
 ├── SPEC.md                    # 遊戲設計規格書
+├── .gitignore                 # Git 忽略設定
+├── Dockerfile                 # Cloud Run 建置（前後端合一）
+├── .dockerignore              # Docker 建置忽略清單
+├── deploy.sh                  # Cloud Run 一鍵部署腳本
 │
 ├── backend/                   # FastAPI 後端
 │   ├── main.py                # API 主程式（路由定義）
@@ -47,8 +67,7 @@ roocode/
 │   ├── database.py            # SQLite 資料庫操作
 │   ├── pyproject.toml         # Python 專案設定（uv）
 │   ├── requirements.txt       # Python 套件依賴清單
-│   ├── run.sh                 # 一鍵啟動腳本
-│   └── snake_game.db          # SQLite 資料庫（執行後自動建立）
+│   └── run.sh                 # 本機一鍵啟動腳本
 │
 └── frontend/                  # 純 HTML/JS 前端
     ├── index.html             # 主頁面
@@ -58,7 +77,7 @@ roocode/
         ├── game.js            # 遊戲核心邏輯引擎
         ├── renderer.js        # Canvas 渲染系統
         ├── ui.js              # UI 控制器（事件處理）
-        └── api.js             # 後端 API 客戶端
+        └── api.js             # 後端 API 客戶端（自動偵測環境）
 ```
 
 ---
@@ -340,10 +359,59 @@ GET /api/v1/scores/1
 ## ⚠️ 注意事項
 
 1. **啟動順序**：請先啟動後端（Port 8000），再啟動前端（Port 3000）。
-2. **同源限制**：前端的 `api.js` 中 `API_BASE_URL` 預設為 `http://localhost:8000/api/v1`，若部署至其他主機需修改此設定。
+2. **同源限制**：`api.js` 會自動偵測環境（本機用 `localhost:8000`，Cloud Run 用相對路徑），無需手動修改。
 3. **資料庫**：SQLite 資料庫檔案 `backend/snake_game.db` 會在後端首次啟動時自動建立，無需手動操作。
 4. **瀏覽器需求**：需支援 ES Module（`type="module"`）的現代瀏覽器，建議使用 Chrome 90+、Firefox 89+、Edge 90+。
 5. **防火牆**：若在遠端伺服器執行，請確認 Port 8000 和 Port 3000 已開放對外。
+
+---
+
+## 🚀 Cloud Run 部署
+
+本專案採用**前後端合一**架構，只需一個 Cloud Run 服務即可同時運行前端與後端。
+
+### 快速部署
+
+```bash
+# 1. 安裝 Google Cloud CLI
+curl https://sdk.cloud.google.com | bash
+gcloud auth login
+
+# 2. 修改 deploy.sh 中的 PROJECT_ID
+vim deploy.sh   # 將 "your-gcp-project-id" 改為你的 GCP 專案 ID
+
+# 3. 一鍵部署（約 3~5 分鐘）
+bash deploy.sh
+```
+
+### 啟用的 GCP API
+
+```bash
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com
+```
+
+### 費用估算（低流量個人專案）
+
+| 服務 | 免費額度 |
+|------|----------|
+| Cloud Run | 每月 200 萬次請求、360,000 CPU 秒 |
+| Cloud Build | 每月 120 分鐘建置時間 |
+| Container Registry | 0.5GB 免費儲存 |
+
+> 個人展示專案幾乎不會超過免費額度。
+
+### 部署架構
+
+```
+使用者瀏覽器
+     ↓ HTTPS
+Google Cloud Run（前後端合一）
+  ├── GET /           → 前端 index.html
+  ├── GET /css/*      → 靜態樣式
+  ├── GET /js/*       → 靜態腳本
+  ├── POST /api/v1/scores   → FastAPI
+  └── GET  /api/v1/scores   → FastAPI
+```
 
 ---
 
@@ -354,5 +422,6 @@ MIT License — 歡迎自由使用與修改。
 ---
 
 <div align="center">
-  Made with ❤️ and 🐍 | Snake Fantasy v1.0.0
+  Made with ❤️ and 🐍 | Snake Fantasy v1.0.0<br>
+  <a href="https://snake-fantasy-api-57229660377.asia-east1.run.app">🎮 立即遊玩</a>
 </div>
