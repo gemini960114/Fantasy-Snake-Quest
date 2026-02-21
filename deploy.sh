@@ -12,7 +12,7 @@
 set -e  # 任何指令失敗立即中止
 
 # ── 請修改以下變數 ──────────────────────────────────────────
-PROJECT_ID="your-gcp-project-id"       # GCP 專案 ID（必填）
+PROJECT_ID="gen-lang-client-0039151647"       # GCP 專案 ID（必填）
 REGION="asia-east1"                     # 部署區域（台灣最近：asia-east1）
 SERVICE_NAME="snake-fantasy-api"        # Cloud Run 服務名稱
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
@@ -51,8 +51,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --memory 512Mi \
   --cpu 1 \
   --min-instances 1 \
-  --max-instances 3 \
-  --set-env-vars "PORT=8080"
+  --max-instances 3
 #
 # 說明：
 #   --min-instances 1  → 維持至少 1 個容器常駐，減少 SQLite 資料遺失頻率

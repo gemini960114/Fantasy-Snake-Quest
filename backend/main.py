@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Optional
 import math
@@ -44,29 +43,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    """根路徑 — 若前端目錄存在，回傳前端頁面"""
-    frontend_index = os.path.join(os.path.dirname(__file__), "..", "frontend", "index.html")
-    if os.path.exists(frontend_index):
-        return FileResponse(frontend_index)
-    # 如果找不到前端，回傳 API 資訊
-    return {
-        "message": "🐍 Snake Fantasy API",
-        "version": "1.0.0",
-        "endpoints": {
-            "POST /api/v1/scores": "提交遊戲分數",
-            "GET /api/v1/scores": "取得排行榜",
-            "GET /api/v1/scores/{id}": "取得單筆分數"
-        }
-    }
-
-
-# 挂載前端靜態檔案（放在 API 路由之後防止衝突）
-_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
-if os.path.isdir(_frontend_dir):
-    app.mount("/", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
 
 
 @app.post(
@@ -189,3 +165,10 @@ async def get_score(score_id: int):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+# ⚠️ 注意：StaticFiles mount 必須在所有 API 路由定義完之後才掛載
+# 否則「/」會攔截所有 /api/v1/* 的請求，造成 404 / 405
+_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.isdir(_frontend_dir):
+    app.mount("/", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
