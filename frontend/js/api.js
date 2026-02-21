@@ -1,8 +1,17 @@
 /**
  * API Client - 與後端伺服器通訊
+ *
+ * 自動偵測環境：
+ *   - 本機開發（localhost:3000）→ 連到 localhost:8000
+ *   - Cloud Run 部署（前後端同一網域）→ 使用相對路徑 /api/v1
  */
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const isLocalDev = window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+
+const API_BASE_URL = isLocalDev
+    ? 'http://localhost:8000/api/v1'   // 本機開發：後端在 8000
+    : '/api/v1';                        // Cloud Run：前後端同一網域，用相對路徑
 
 class APIClient {
     constructor(baseUrl = API_BASE_URL) {

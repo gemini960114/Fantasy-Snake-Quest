@@ -1,8 +1,11 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Optional
 import math
+import os
 
 from database import init_database, create_score, get_scores, get_score_by_id
 from models import (
@@ -44,7 +47,11 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    """根路徑"""
+    """根路徑 — 若前端目錄存在，回傳前端頁面"""
+    frontend_index = os.path.join(os.path.dirname(__file__), "..", "frontend", "index.html")
+    if os.path.exists(frontend_index):
+        return FileResponse(frontend_index)
+    # 如果找不到前端，回傳 API 資訊
     return {
         "message": "🐍 Snake Fantasy API",
         "version": "1.0.0",
@@ -54,6 +61,12 @@ async def root():
             "GET /api/v1/scores/{id}": "取得單筆分數"
         }
     }
+
+
+# 挂載前端靜態檔案（放在 API 路由之後防止衝突）
+_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.isdir(_frontend_dir):
+    app.mount("/", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
 
 
 @app.post(

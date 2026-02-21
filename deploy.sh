@@ -23,6 +23,7 @@ echo "  專案：${PROJECT_ID}"
 echo "  區域：${REGION}"
 echo "  服務：${SERVICE_NAME}"
 echo "  資料庫：SQLite（重啟後會清空，屬正常行為）"
+echo "  模式：前後端合一，無需 Firebase Hosting"
 echo ""
 
 # 確認 PROJECT_ID 已設定
@@ -34,9 +35,9 @@ fi
 # 1. 設定 GCP 專案
 gcloud config set project "${PROJECT_ID}"
 
-# 2. 建置 Docker 映像並推送至 GCR（使用 Cloud Build）
-echo "📦 建置 Docker 映像..."
-cd "$(dirname "$0")/backend"
+# 2. 建置 Docker 映像（從根目錄，Dockerfile 包含前後端）
+echo "📦 建置 Docker 映像（前後端合一）..."
+cd "$(dirname "$0")"
 gcloud builds submit --tag "${IMAGE_NAME}" .
 
 # 3. 部署到 Cloud Run
@@ -64,23 +65,16 @@ SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" \
   --format "value(status.url)")
 
 echo ""
-echo "✅ 後端部署成功！"
+echo "✅ 部署成功（前後端合一）！"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  📡 API URL：${SERVICE_URL}"
-echo "  📖 Swagger：${SERVICE_URL}/docs"
+echo "  🎮 遊戲網址：${SERVICE_URL}"
+echo "  📡 API URL ：${SERVICE_URL}/api/v1"
+echo "  📖 Swagger ：${SERVICE_URL}/docs"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "⚙️  下一步 - 更新前端 API 位址："
-echo "   編輯 frontend/js/api.js 第 5 行："
-echo "   const API_BASE_URL = '${SERVICE_URL}/api/v1';"
-echo ""
-echo "🌐 下一步 - 部署前端到 Firebase Hosting："
-echo "   npm install -g firebase-tools"
-echo "   firebase login"
-echo "   firebase init hosting  # public 目錄填 frontend"
-echo "   firebase deploy"
 echo ""
 echo "🔗 測試 API："
 echo "   curl ${SERVICE_URL}/"
 echo "   curl '${SERVICE_URL}/api/v1/scores?limit=5'"
+echo ""
+echo "⚠️  注意：SQLite 資料於重新部署時會清空，此為正常行為。"
