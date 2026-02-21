@@ -1,0 +1,119 @@
+# ============================================================
+# Snake Fantasy — .gitignore
+# ============================================================
+
+# ── Python ──────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# 虛擬環境
+.venv/
+venv/
+env/
+ENV/
+
+# uv
+.uv/
+uv.lock
+
+# 套件打包
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# ── SQLite 資料庫 ────────────────────────────────────────────
+# 資料庫檔案（避免將玩家資料上傳至版本控制）
+*.db
+*.sqlite
+*.sqlite3
+
+# ── 系統與編輯器 ─────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains（PyCharm / WebStorm）
+.idea/
+*.iml
+*.iws
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+
+# Emacs
+\#*\#
+.\#*
+
+# ── 日誌與暫存 ────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+npm-debug.log*
+
+# 暫存目錄
+tmp/
+temp/
+.tmp/
+.cache/
+
+# ── 環境變數 ──────────────────────────────────────────────────
+# 永遠不要提交包含密碼/密鑰的 .env 檔案
+.env
+.env.*
+!.env.example
+
+# ── Node.js（若日後加入前端建置工具）────────────────────────────
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npm
+.yarn/
+
+# ── 測試與覆蓋率 ─────────────────────────────────────────────
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+.tox/
+.pytest_cache/
+.hypothesis/
+nosetests.xml
+coverage.xml
+*.cover
+
+# ── Agent / IDE 相關（本地開發工具）─────────────────────────────
+.agent/
+.agents/
+.roo/
+.gemini/

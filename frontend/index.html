@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 Snake Fantasy - 夢幻貪食蛇</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- 頂部導航欄 -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🐍</span>
+                <h1>SNAKE FANTASY</h1>
+            </div>
+            <nav class="nav-buttons">
+                <button id="btn-leaderboard" class="btn btn-secondary">
+                    <span>🏆</span> 排行榜
+                </button>
+                <button id="btn-settings" class="btn btn-secondary">
+                    <span>⚙️</span> 設定
+                </button>
+            </nav>
+        </header>
+
+        <!-- 主遊戲區域 -->
+        <main class="main-content">
+            <!-- 遊戲畫布區域 -->
+            <div class="game-area">
+                <canvas id="game-canvas" width="600" height="600"></canvas>
+
+                <!-- 遊戲覆蓋層 - 開始畫面 -->
+                <div id="overlay-start" class="overlay">
+                    <div class="overlay-content">
+                        <h2 class="title-glow">🐍 SNAKE FANTASY 🐍</h2>
+                        <p class="subtitle">經典貪食蛇的夢幻重生</p>
+                        <div class="level-preview">
+                            <div class="level-card" data-level="1">
+                                <span class="level-num">1</span>
+                                <span class="level-name">翠綠森林</span>
+                            </div>
+                            <div class="level-card" data-level="2">
+                                <span class="level-num">2</span>
+                                <span class="level-name">幽暗洞穴</span>
+                            </div>
+                            <div class="level-card" data-level="3">
+                                <span class="level-num">3</span>
+                                <span class="level-name">火焰地獄</span>
+                            </div>
+                            <div class="level-card" data-level="4">
+                                <span class="level-num">4</span>
+                                <span class="level-name">冰雪王國</span>
+                            </div>
+                            <div class="level-card" data-level="5">
+                                <span class="level-num">5</span>
+                                <span class="level-name">最終試煉</span>
+                            </div>
+                        </div>
+                        <button id="btn-start" class="btn btn-primary btn-large">
+                            <span>🎮</span> 開始遊戲
+                        </button>
+                        <div class="controls-hint">
+                            <p>使用方向鍵或 WASD 控制移動 | 空白鍵暫停</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遊戲覆蓋層 - 暫停畫面 -->
+                <div id="overlay-pause" class="overlay hidden">
+                    <div class="overlay-content">
+                        <h2 class="title-glow">⏸️ 遊戲暫停</h2>
+                        <button id="btn-resume" class="btn btn-primary btn-large">
+                            <span>▶️</span> 繼續遊戲
+                        </button>
+                        <button id="btn-quit" class="btn btn-danger">
+                            <span>🚪</span> 結束遊戲
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 遊戲覆蓋層 - 關卡過關 -->
+                <div id="overlay-level-complete" class="overlay hidden">
+                    <div class="overlay-content">
+                        <h2 class="title-glow level-complete">✨ 關卡完成！✨</h2>
+                        <div class="level-stats">
+                            <p>分數: <span id="level-score">0</span></p>
+                            <p>時間: <span id="level-time">00:00</span></p>
+                        </div>
+                        <div class="level-actions">
+                            <button id="btn-next-level" class="btn btn-primary btn-large">
+                                <span>➡️</span> 進入下一關
+                            </button>
+                            <button id="btn-end-game" class="btn btn-secondary">
+                                <span>🏁</span> 結束遊戲
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遊戲覆蓋層 - 遊戲結束 -->
+                <div id="overlay-game-over" class="overlay hidden">
+                    <div class="overlay-content">
+                        <h2 class="title-glow game-over">💀 遊戲結束 💀</h2>
+                        <div class="final-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">最終分數</span>
+                                <span class="stat-value" id="final-score">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">通過關卡</span>
+                                <span class="stat-value" id="final-level">1</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">遊戲時間</span>
+                                <span class="stat-value" id="final-time">00:00</span>
+                            </div>
+                        </div>
+                        <div class="name-input-section">
+                            <label for="player-name">請輸入您的名稱:</label>
+                            <input type="text" id="player-name" maxlength="50" placeholder="玩家名稱">
+                            <button id="btn-submit-score" class="btn btn-primary">
+                                <span>📝</span> 提交分數
+                            </button>
+                        </div>
+                        <button id="btn-restart" class="btn btn-secondary">
+                            <span>🔄</span> 再玩一次
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 遊戲狀態欄 -->
+            <div class="game-status">
+                <div class="status-item">
+                    <span class="status-label">分數</span>
+                    <span class="status-value" id="score-display">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">關卡</span>
+                    <span class="status-value" id="level-display">1</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">時間</span>
+                    <span class="status-value" id="time-display">00:00</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- 排行榜側邊欄 -->
+        <aside id="leaderboard-panel" class="leaderboard-panel hidden">
+            <div class="leaderboard-header">
+                <h2>🏆 排行榜</h2>
+                <button id="btn-close-leaderboard" class="btn-close">✕</button>
+            </div>
+            <div class="leaderboard-list" id="leaderboard-list">
+                <!-- 排行榜項目將動態生成 -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- 引入 JavaScript 模組 -->
+    <script type="module" src="js/api.js"></script>
+    <script type="module" src="js/renderer.js"></script>
+    <script type="module" src="js/game.js"></script>
+    <script type="module" src="js/ui.js"></script>
+</body>
+
+</html>
