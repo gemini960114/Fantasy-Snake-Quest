@@ -1,4 +1,4 @@
-你是一位資深全端工程師。請依據 skills：`backend-development`、`frontend-development`，從零開始規劃並實作「Fantasy 風格貪食蛇」Web App。
+你是一位資深全端工程師。請依據 skills：`backend-development`、`frontend-development`t`、`node-npm-environment`、`uv-environment`，從零開始規劃並實作「Fantasy 風格貪食蛇」Web App。
 
 ### 目標
 
